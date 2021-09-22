@@ -1,0 +1,21 @@
+Source: kodi-audiodecoder-hvl
+Priority: extra
+Maintainer: Nobody <nobody@kodi.tv>
+Build-Depends: debhelper (>= 9.0.0), cmake, kodi-addon-dev
+Standards-Version: 4.1.2
+Section: libs
+Homepage: https://kodi.tv
+
+Package: kodi-audiodecoder-hvl
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: HivelyTracker audio decoder for Kodi
+  HivelyTracker audio decoder for Kodi
+
+Package: kodi-audiodecoder-hvl-dbg
+Section: debug
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: debug symbols for HivelyTracker audio decoder for Kodi
+  debug symbols for HivelyTracker audio decoder for Kodi
