@@ -70,12 +70,18 @@ bool CHVLCodec::Init(const std::string& filename,
 
   hvl_InitSubsong(m_tune, m_track);
 
+  int duration = CalculateLength(m_tune, m_track);
+  ctx.totaltime = duration * 48000;
+
+  // Reset after length scan before
+  hvl_InitSubsong(m_tune, m_track);
+
   format = AUDIOENGINE_FMT_S32NE;
   channellist = {AUDIOENGINE_CH_FL, AUDIOENGINE_CH_FR};
   channels = 2;
   bitspersample = 32;
   samplerate = 48000;
-  totaltime = 5 * 60 * 1000; // 5 minutes
+  totaltime = 1000 * duration;
   bitrate = 0;
 
   return true;
@@ -83,7 +89,7 @@ bool CHVLCodec::Init(const std::string& filename,
 
 int CHVLCodec::ReadPCM(uint8_t* buffer, int size, int& actualsize)
 {
-  if (ctx.timePos > 5*48000*60)
+  if (m_tune->ht_SongEndReached || ctx.timePos > ctx.totaltime)
     return 1;
 
   if (ctx.left == 0)
@@ -154,6 +160,7 @@ bool CHVLCodec::ReadTag(const std::string& file, kodi::addon::AudioDecoderInfoTa
   hvl_tune* tune = LoadHVL(info.second);
   if (!tune)
     return false;
+  hvl_InitSubsong(tune, info.first);
 
   std::string title = tune->ht_Name;
   if (title.empty())
@@ -162,9 +169,11 @@ bool CHVLCodec::ReadTag(const std::string& file, kodi::addon::AudioDecoderInfoTa
   tag.SetTitle(title);
   if (tune->ht_SubsongNr+1 > 1)
     tag.SetTrack(info.first+1);
-  tag.SetDuration(5*60);
+  tag.SetDuration(CalculateLength(tune, info.first));
   tag.SetSamplerate(48000);
   tag.SetChannels(2);
+
+  hvl_FreeTune(tune);
 
   return true;
 }
@@ -182,6 +191,17 @@ hvl_tune* CHVLCodec::LoadHVL(const std::string& fileName)
 
   hvl_tune* tune = hvl_LoadTune(buf.data(), len, 48000, 1);
   return tune;
+}
+
+int CHVLCodec::CalculateLength(hvl_tune* tune, int track)
+{
+  unsigned int safety = 2 * 60 * 60 * 50 * tune->ht_SpeedMultiplier; // 2 hours
+  while (!tune->ht_SongEndReached && safety)
+  {
+    hvl_play_irq(tune);
+    --safety;
+  }
+  return safety > 0 ? (tune->ht_PlayingTime / tune->ht_SpeedMultiplier / 50) : (5 * 60 * 1000); // fallback 5 minutes;
 }
 
 //------------------------------------------------------------------------------
