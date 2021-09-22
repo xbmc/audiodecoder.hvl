@@ -24,6 +24,7 @@ struct ATTRIBUTE_HIDDEN HVLContext
   int32_t sample_buffer[48000/50*2];
   size_t left = 0; // in terms of frames
   int64_t timePos = 0; // in terms of frames
+  int64_t totaltime = 0;
 };
 
 
@@ -49,6 +50,7 @@ public:
 
 private:
   hvl_tune* LoadHVL(const std::string& file);
+  int CalculateLength(hvl_tune* tune, int track);
 
   HVLContext ctx;
   hvl_tune* m_tune = nullptr;
