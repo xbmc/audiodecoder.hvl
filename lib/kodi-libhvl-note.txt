@@ -1,0 +1,5 @@
+libhvl source from https://git.lopez-snowhill.net/chris/foo_input_hvl
+Sync to f1ad113e (30. Jan. 2018)
+
+Other source place:
+- https://bitbucket.org/kode54/foo_input_hvl
