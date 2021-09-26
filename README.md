@@ -4,7 +4,6 @@ This is a [Kodi](https://kodi.tv) audio decoder addon for HivelyTracker files.
 
 [![License: GPL-2.0-or-later](https://img.shields.io/badge/License-GPL%20v2+-blue.svg)](LICENSE.md)
 [![Build and run tests](https://github.com/xbmc/audiodecoder.hvl/actions/workflows/build.yml/badge.svg?branch=Nexus)](https://github.com/xbmc/audiodecoder.hvl/actions/workflows/build.yml)
-[![Build Status](https://travis-ci.org/xbmc/audiodecoder.hvl.svg?branch=Nexus)](https://travis-ci.org/xbmc/audiodecoder.hvl/branches)
 [![Build Status](https://dev.azure.com/teamkodi/binary-addons/_apis/build/status/xbmc.audiodecoder.hvl?branchName=Nexus)](https://dev.azure.com/teamkodi/binary-addons/_build/latest?definitionId=80&branchName=Nexus)
 [![Build Status](https://jenkins.kodi.tv/view/Addons/job/xbmc/job/audiodecoder.hvl/job/Nexus/badge/icon)](https://jenkins.kodi.tv/blue/organizations/jenkins/xbmc%2Faudiodecoder.hvl/branches/)
 
