@@ -43,7 +43,7 @@ public:
             int& bitrate,
             AudioEngineDataFormat& format,
             std::vector<AudioEngineChannel>& channellist) override;
-  int ReadPCM(uint8_t* buffer, int size, int& actualsize) override;
+  int ReadPCM(uint8_t* buffer, size_t size, size_t& actualsize) override;
   int64_t Seek(int64_t time) override;
   int TrackCount(const std::string& fileName) override;
   bool ReadTag(const std::string& file, kodi::addon::AudioDecoderInfoTag& tag) override;

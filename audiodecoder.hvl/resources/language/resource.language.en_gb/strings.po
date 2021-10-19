@@ -23,3 +23,15 @@ msgstr ""
 msgctxt "Addon Description"
 msgid "Hively Tracker is a tracker program based upon the AHX format created in the mid '90s by Dexter and Pink of Abyss. The format was relatively popular, and many songs were created and used in scene productions and games. AHX was designed to create a very SID-like sound on the Amiga."
 msgstr ""
+
+#. Supported file extension description about ".hvl"
+#: audiodecoder.hvl/addon.xml.in
+msgctxt "#30100"
+msgid "HivelyTracker - An audio composing and music editing tool for Amiga computers developed by Commodore."
+msgstr ""
+
+#. Supported file extension description about ".ahx"
+#: audiodecoder.hvl/addon.xml.in
+msgctxt "#30101"
+msgid "WinAHX - A music composing software used on Amiga systems for creating C64-like synthesized music."
+msgstr ""
