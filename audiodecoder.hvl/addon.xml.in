@@ -19,7 +19,7 @@
     <assets>
       <icon>icon.png</icon>
     </assets>
-    <summary lang="da_DK">HivelyTracker lyddekoder</summary>
+    <summary lang="da_DK">HivelyTracker lydafkoder</summary>
     <summary lang="de_DE">HivelyTracker Audio-Decoder</summary>
     <summary lang="en_GB">HivelyTracker Audio Decoder</summary>
     <summary lang="ko_KR">HivelyTracker 오디오 디코더</summary>
