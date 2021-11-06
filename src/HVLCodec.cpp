@@ -20,19 +20,11 @@ namespace
 std::pair<int, std::string> extractInfo(const std::string& name)
 {
   int track = 0;
-  std::string toLoad(name);
-  if (toLoad.find(".hvlstream") != std::string::npos)
-  {
-    size_t iStart = toLoad.rfind('-') + 1;
-    track = atoi(toLoad.substr(iStart, toLoad.size() - iStart - 10).c_str()) - 1;
-    //  The directory we are in, is the file
-    //  that contains the bitstream to play,
-    //  so extract it
-    size_t slash = toLoad.rfind('\\');
-    if (slash == std::string::npos)
-      slash = toLoad.rfind('/');
-    toLoad = toLoad.substr(0, slash);
-  }
+  const std::string toLoad = kodi::addon::CInstanceAudioDecoder::GetTrack("hvl", name, track);
+
+  // Correct if packed sound file with several sounds
+  if (track > 0)
+    --track;
 
   return std::make_pair(track, toLoad);
 }
@@ -87,10 +79,10 @@ bool CHVLCodec::Init(const std::string& filename,
   return true;
 }
 
-int CHVLCodec::ReadPCM(uint8_t* buffer, int size, int& actualsize)
+int CHVLCodec::ReadPCM(uint8_t* buffer, size_t size, size_t& actualsize)
 {
   if (m_tune->ht_SongEndReached || ctx.timePos > ctx.totaltime)
-    return 1;
+    return AUDIODECODER_READ_EOF;
 
   if (ctx.left == 0)
   {
@@ -111,7 +103,7 @@ int CHVLCodec::ReadPCM(uint8_t* buffer, int size, int& actualsize)
   actualsize = frames_to_copy*8;
   ctx.timePos += frames_to_copy;
 
-  return 0;
+  return AUDIODECODER_READ_SUCCESS;
 }
 
 int64_t CHVLCodec::Seek(int64_t time)
@@ -140,9 +132,6 @@ int64_t CHVLCodec::Seek(int64_t time)
 
 int CHVLCodec::TrackCount(const std::string& fileName)
 {
-  if (fileName.find(".hvlstream") != std::string::npos)
-    return 0;
-
   hvl_tune* tune = LoadHVL(fileName);
   if (!tune)
     return 0;
