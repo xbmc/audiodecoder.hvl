@@ -195,7 +195,7 @@ int CHVLCodec::CalculateLength(hvl_tune* tune, int track)
 
 //------------------------------------------------------------------------------
 
-class ATTRIBUTE_HIDDEN CMyAddon : public kodi::addon::CAddonBase
+class ATTR_DLL_LOCAL CMyAddon : public kodi::addon::CAddonBase
 {
 public:
   CMyAddon() = default;

@@ -19,7 +19,7 @@ extern "C"
 #include <stdio.h>
 }
 
-struct ATTRIBUTE_HIDDEN HVLContext
+struct ATTR_DLL_LOCAL HVLContext
 {
   int32_t sample_buffer[48000/50*2];
   size_t left = 0; // in terms of frames
@@ -28,7 +28,7 @@ struct ATTRIBUTE_HIDDEN HVLContext
 };
 
 
-class ATTRIBUTE_HIDDEN CHVLCodec : public kodi::addon::CInstanceAudioDecoder
+class ATTR_DLL_LOCAL CHVLCodec : public kodi::addon::CInstanceAudioDecoder
 {
 public:
   CHVLCodec(KODI_HANDLE instance, const std::string& version);
