@@ -29,10 +29,9 @@ std::pair<int, std::string> extractInfo(const std::string& name)
   return std::make_pair(track, toLoad);
 }
 
-}
+} // namespace
 
-CHVLCodec::CHVLCodec(KODI_HANDLE instance, const std::string& version)
-  : CInstanceAudioDecoder(instance, version)
+CHVLCodec::CHVLCodec(const kodi::addon::IInstanceInfo& instance) : CInstanceAudioDecoder(instance)
 {
   hvl_InitReplayer();
 }
@@ -86,21 +85,22 @@ int CHVLCodec::ReadPCM(uint8_t* buffer, size_t size, size_t& actualsize)
 
   if (ctx.left == 0)
   {
-    hvl_DecodeFrame(m_tune, reinterpret_cast<int8_t*>(ctx.sample_buffer), reinterpret_cast<int8_t*>(ctx.sample_buffer+1), 8);
-    ctx.left = 48000/50;
+    hvl_DecodeFrame(m_tune, reinterpret_cast<int8_t*>(ctx.sample_buffer),
+                    reinterpret_cast<int8_t*>(ctx.sample_buffer + 1), 8);
+    ctx.left = 48000 / 50;
   }
 
   size_t frames_to_copy = std::min(static_cast<size_t>(size) / 8, ctx.left);
 
   int32_t* out_buf = reinterpret_cast<int32_t*>(buffer);
-  int32_t* in_buf = ctx.sample_buffer + 2*(48000/50-ctx.left);
+  int32_t* in_buf = ctx.sample_buffer + 2 * (48000 / 50 - ctx.left);
   for (size_t i = 0; i < frames_to_copy; ++i)
   {
-    out_buf[2*i] = in_buf[2*i]*(1 << 8);
-    out_buf[2*i+1] = in_buf[2*i+1]*(1 << 8);
+    out_buf[2 * i] = in_buf[2 * i] * (1 << 8);
+    out_buf[2 * i + 1] = in_buf[2 * i + 1] * (1 << 8);
   }
   ctx.left -= frames_to_copy;
-  actualsize = frames_to_copy*8;
+  actualsize = frames_to_copy * 8;
   ctx.timePos += frames_to_copy;
 
   return AUDIODECODER_READ_SUCCESS;
@@ -119,14 +119,15 @@ int64_t CHVLCodec::Seek(int64_t time)
   if (wantedTimePos - ctx.timePos > ctx.left)
   {
     ctx.timePos += ctx.left;
-    while (ctx.timePos < wantedTimePos-48000/50)
+    while (ctx.timePos < wantedTimePos - 48000 / 50)
     {
-      hvl_DecodeFrame(m_tune, reinterpret_cast<int8_t*>(ctx.sample_buffer), reinterpret_cast<int8_t*>(ctx.sample_buffer+1), 8);
-      ctx.timePos += 48000/50;
+      hvl_DecodeFrame(m_tune, reinterpret_cast<int8_t*>(ctx.sample_buffer),
+                      reinterpret_cast<int8_t*>(ctx.sample_buffer + 1), 8);
+      ctx.timePos += 48000 / 50;
     }
   }
   // finally position ourself in the buffered data
-  ctx.left = 48000/50 - (wantedTimePos - ctx.timePos);
+  ctx.left = 48000 / 50 - (wantedTimePos - ctx.timePos);
   return time;
 }
 
@@ -136,7 +137,7 @@ int CHVLCodec::TrackCount(const std::string& fileName)
   if (!tune)
     return 0;
 
-  int res = tune->ht_SubsongNr+1;
+  int res = tune->ht_SubsongNr + 1;
   hvl_FreeTune(tune);
 
   return res;
@@ -156,8 +157,8 @@ bool CHVLCodec::ReadTag(const std::string& file, kodi::addon::AudioDecoderInfoTa
     return false;
 
   tag.SetTitle(title);
-  if (tune->ht_SubsongNr+1 > 1)
-    tag.SetTrack(info.first+1);
+  if (tune->ht_SubsongNr + 1 > 1)
+    tag.SetTrack(info.first + 1);
   tag.SetDuration(CalculateLength(tune, info.first));
   tag.SetSamplerate(48000);
   tag.SetChannels(2);
@@ -190,7 +191,8 @@ int CHVLCodec::CalculateLength(hvl_tune* tune, int track)
     hvl_play_irq(tune);
     --safety;
   }
-  return safety > 0 ? (tune->ht_PlayingTime / tune->ht_SpeedMultiplier / 50) : (5 * 60 * 1000); // fallback 5 minutes;
+  return safety > 0 ? (tune->ht_PlayingTime / tune->ht_SpeedMultiplier / 50)
+                    : (5 * 60 * 1000); // fallback 5 minutes;
 }
 
 //------------------------------------------------------------------------------
@@ -199,13 +201,10 @@ class ATTR_DLL_LOCAL CMyAddon : public kodi::addon::CAddonBase
 {
 public:
   CMyAddon() = default;
-  ADDON_STATUS CreateInstance(int instanceType,
-                              const std::string& instanceID,
-                              KODI_HANDLE instance,
-                              const std::string& version,
-                              KODI_HANDLE& addonInstance) override
+  ADDON_STATUS CreateInstance(const kodi::addon::IInstanceInfo& instance,
+                              KODI_ADDON_INSTANCE_HDL& hdl) override
   {
-    addonInstance = new CHVLCodec(instance, version);
+    hdl = new CHVLCodec(instance);
     return ADDON_STATUS_OK;
   }
   ~CMyAddon() override = default;

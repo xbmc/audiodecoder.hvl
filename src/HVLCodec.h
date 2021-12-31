@@ -21,7 +21,7 @@ extern "C"
 
 struct ATTR_DLL_LOCAL HVLContext
 {
-  int32_t sample_buffer[48000/50*2];
+  int32_t sample_buffer[48000 / 50 * 2];
   size_t left = 0; // in terms of frames
   int64_t timePos = 0; // in terms of frames
   int64_t totaltime = 0;
@@ -31,7 +31,7 @@ struct ATTR_DLL_LOCAL HVLContext
 class ATTR_DLL_LOCAL CHVLCodec : public kodi::addon::CInstanceAudioDecoder
 {
 public:
-  CHVLCodec(KODI_HANDLE instance, const std::string& version);
+  CHVLCodec(const kodi::addon::IInstanceInfo& instance);
   virtual ~CHVLCodec();
 
   bool Init(const std::string& filename,
